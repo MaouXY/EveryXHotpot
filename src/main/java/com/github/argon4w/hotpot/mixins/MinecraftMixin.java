@@ -1,6 +1,5 @@
 package com.github.argon4w.hotpot.mixins;
 
-import com.github.argon4w.hotpot.HotpotModEntry;
 import com.github.argon4w.hotpot.client.soups.HotpotSoupRendererConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
@@ -22,6 +21,8 @@ public class MinecraftMixin {
             target = "(Lnet/minecraft/client/renderer/texture/TextureManager;Lnet/minecraft/client/color/block/BlockColors;I)Lnet/minecraft/client/resources/model/ModelManager;",
             shift = At.Shift.BEFORE))
     public void constructor(GameConfig pGameConfig, CallbackInfo ci) {
-        resourceManager.registerReloadListener(HotpotModEntry.HOTPOT_SOUP_RENDERER_CONFIG_MANAGER = new HotpotSoupRendererConfigManager());
+        HotpotSoupRendererConfigManager manager = new HotpotSoupRendererConfigManager();
+        HotpotSoupRendererConfigManager.setInstance(manager);
+        resourceManager.registerReloadListener(manager);
     }
 }

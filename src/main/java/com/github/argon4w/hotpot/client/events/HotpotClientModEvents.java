@@ -22,9 +22,19 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = HotpotModEntry.MODID, value = Dist.CLIENT)
 public class HotpotClientModEvents {
 
+    private static HotpotBlockEntityWithoutLevelRenderer hotpotSpecialItemRenderer;
+
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
-        HotpotModEntry.HOTPOT_SPECIAL_ITEM_RENDERER = new HotpotBlockEntityWithoutLevelRenderer();
+        hotpotSpecialItemRenderer = new HotpotBlockEntityWithoutLevelRenderer();
+    }
+
+    public static HotpotBlockEntityWithoutLevelRenderer getHotpotSpecialItemRenderer() {
+        if (hotpotSpecialItemRenderer == null) {
+            hotpotSpecialItemRenderer = new HotpotBlockEntityWithoutLevelRenderer();
+        }
+
+        return hotpotSpecialItemRenderer;
     }
 
     @SubscribeEvent

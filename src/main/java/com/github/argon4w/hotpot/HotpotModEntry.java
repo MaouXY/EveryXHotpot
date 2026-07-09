@@ -2,18 +2,6 @@ package com.github.argon4w.hotpot;
 
 import com.github.argon4w.hotpot.api.items.IHotpotCommonPlacementBlockItem;
 import com.github.argon4w.hotpot.blocks.*;
-import com.github.argon4w.hotpot.client.contents.HotpotContentRenderers;
-import com.github.argon4w.hotpot.client.contents.HotpotItemContentSpecialRenderers;
-import com.github.argon4w.hotpot.client.contents.HotpotStrainerBasketContentRenderers;
-import com.github.argon4w.hotpot.client.items.HotpotBlockEntityWithoutLevelRenderer;
-import com.github.argon4w.hotpot.client.items.HotpotItemSpecialRenderers;
-import com.github.argon4w.hotpot.client.items.sprites.colors.HotpotSpriteColorProviders;
-import com.github.argon4w.hotpot.client.items.sprites.processors.HotpotSpriteProcessors;
-import com.github.argon4w.hotpot.client.items.sprites.processors.providers.HotpotSpriteProcessorProviders;
-import com.github.argon4w.hotpot.client.placements.HotpotPlacementRenderers;
-import com.github.argon4w.hotpot.client.soups.HotpotSoupRendererConfigManager;
-import com.github.argon4w.hotpot.client.soups.effects.HotpotSoupClientTickEffects;
-import com.github.argon4w.hotpot.client.soups.renderers.HotpotSoupCustomElementSerializers;
 import com.github.argon4w.hotpot.contents.HotpotContentSerializers;
 import com.github.argon4w.hotpot.items.*;
 import com.github.argon4w.hotpot.items.components.*;
@@ -51,9 +39,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -169,9 +159,6 @@ public class HotpotModEntry {
 
     public static final ResourceKey<DamageType> IN_HOTPOT_DAMAGE_KEY = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "in_hotpot"));
 
-    public static HotpotBlockEntityWithoutLevelRenderer HOTPOT_SPECIAL_ITEM_RENDERER;
-    public static HotpotSoupRendererConfigManager HOTPOT_SOUP_RENDERER_CONFIG_MANAGER;
-
     public HotpotModEntry(IEventBus modEventBus, ModContainer modContainer) {
         HotpotRegistries.BLOCKS.register(modEventBus);
         HotpotRegistries.ITEMS.register(modEventBus);
@@ -183,20 +170,21 @@ public class HotpotModEntry {
         HotpotRegistries.DATA_COMPONENT_TYPES.register(modEventBus);
 
         HotpotSoupComponentTypeSerializers.SOUP_COMPONENT_TYPE_SERIALIZERS.register(modEventBus);
-        HotpotSoupCustomElementSerializers.CUSTOM_ELEMENT_RENDERER_SERIALIZERS.register(modEventBus);
-        HotpotSoupClientTickEffects.SOUP_CLIENT_TICK_EFFECT_SERIALIZERS.register(modEventBus);
         HotpotContentSerializers.CONTENT_SERIALIZERS.register(modEventBus);
-        HotpotContentRenderers.CONTENT_RENDERERS.register(modEventBus);
-        HotpotStrainerBasketContentRenderers.STRAINER_BASKET_CONTENT_RENDERERS.register(modEventBus);
-        HotpotItemContentSpecialRenderers.ITEM_CONTENT_SPECIAL_RENDERERS.register(modEventBus);
         HotpotPlacementSerializers.PLACEMENT_SERIALIZERS.register(modEventBus);
-        HotpotPlacementRenderers.PLACEMENT_RENDERERS.register(modEventBus);
         HotpotSoupIngredients.CONDITIONS.register(modEventBus);
         HotpotSoupIngredients.ACTIONS.register(modEventBus);
-        HotpotItemSpecialRenderers.ITEM_SPECIAL_RENDERERS.register(modEventBus);
-        HotpotSpriteProcessors.SPRITE_PROCESSORS.register(modEventBus);
-        HotpotSpriteColorProviders.SPRITE_COLOR_PROVIDERS.register(modEventBus);
-        HotpotSpriteProcessorProviders.SPRITE_PROCESSOR_PROVIDERS.register(modEventBus);
         HotpotSpriteConfigSerializers.SPRITE_CONFIGS.register(modEventBus);
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            try {
+                Class
+                        .forName("com.github.argon4w.hotpot.client.HotpotClientRegistries")
+                        .getMethod("register", IEventBus.class)
+                        .invoke(null, modEventBus);
+            } catch (ReflectiveOperationException exception) {
+                throw new RuntimeException("Failed to register EveryXHotpot client registries", exception);
+            }
+        }
     }
 }

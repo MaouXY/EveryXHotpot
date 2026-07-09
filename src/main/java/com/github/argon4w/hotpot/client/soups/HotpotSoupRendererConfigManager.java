@@ -1,7 +1,6 @@
 package com.github.argon4w.hotpot.client.soups;
 
 import com.github.argon4w.fancytoys.streams.EntryStream;
-import com.github.argon4w.hotpot.HotpotModEntry;
 import com.github.argon4w.hotpot.soups.HotpotComponentSoupType;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -29,10 +28,15 @@ public class HotpotSoupRendererConfigManager extends net.neoforged.neoforge.reso
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String DIRECTORY = "soups";
 
+    private static HotpotSoupRendererConfigManager instance;
     private ImmutableMap<ResourceLocation, HotpotSoupRendererConfig> rendererConfigs;
 
     public HotpotSoupRendererConfigManager() {
         this.rendererConfigs = ImmutableMap.of();
+    }
+
+    public static void setInstance(HotpotSoupRendererConfigManager manager) {
+        instance = manager;
     }
 
     @NotNull @Override
@@ -65,11 +69,11 @@ public class HotpotSoupRendererConfigManager extends net.neoforged.neoforge.reso
     }
 
     public static HotpotSoupRendererConfig getSoupRendererConfig(ResourceLocation resourceLocation) {
-        return HotpotModEntry.HOTPOT_SOUP_RENDERER_CONFIG_MANAGER.rendererConfigs.getOrDefault(
+        return instance == null ? EMPTY_SOUP_RENDER_CONFIG : instance.rendererConfigs.getOrDefault(
                 resourceLocation, EMPTY_SOUP_RENDER_CONFIG);
     }
 
     public static Collection<HotpotSoupRendererConfig> getAllSoupRendererConfigs() {
-        return HotpotModEntry.HOTPOT_SOUP_RENDERER_CONFIG_MANAGER.rendererConfigs.values();
+        return instance == null ? List.of() : instance.rendererConfigs.values();
     }
 }
