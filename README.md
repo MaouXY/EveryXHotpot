@@ -10,6 +10,8 @@
 ## Fork 维护说明
 本 fork 用于验证并修复 NeoForge 1.21.1 专用服务端加载 EveryXHotpot 时触发客户端渲染类的问题。当前修复分支为 `fix/dedicated-server-client-class-crash`。
 
+Fork 修复版从 `2.0.6-1.21Neo-MaouXY.1` 起使用独立版本号，避免与上游 `2.0.5-1.21Neo-TeaCon2024` 构建混淆。
+
 原项目采用 MIT License。本 fork 保留原始 `LICENSE` 与版权声明；发布源码或二进制构建时，请同时保留并附带该许可证文件。
 
 ## 概述
@@ -36,6 +38,7 @@
 1. 修复专用服务端加载时因 `HotpotModEntry` 直接引用客户端渲染类导致的 `NoClassDefFoundError: net/minecraft/client/renderer/BlockEntityWithoutLevelRenderer`。
 2. 将客户端侧渲染注册拆分到 `HotpotClientRegistries`，并仅在 `Dist.CLIENT` 下通过反射加载，避免服务端 classloader 解析客户端类。
 3. 将自定义物品渲染器与汤底渲染配置管理器的静态引用移到客户端侧，避免 KubeJS 扫描 common 主类字段时触发崩溃。
+4. 使用独立 fork 版本号 `2.0.6-1.21Neo-MaouXY.1`，并强制 Gradle 资源过滤使用 UTF-8，避免 `META-INF/neoforge.mods.toml` 在服务端被 NeoForge 解析为无效模组文件。
 
 ### 2024-10-30 2.0.2-TeaCon2024 **(1.21)**
 1. 修复了与最新版Sodium/Embeddium一起使用时的兼容性问题
