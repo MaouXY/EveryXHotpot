@@ -7,6 +7,11 @@
 <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=qx11eH2YPMQzvxkGmqeEsENXr9_V-i7D&authKey=Fpgx7FR4O78VecudWkXAL5Ng6Lui2xTXzucnnO0c5p4t80lTM25jZnPybbmmQ6VO&noverify=0&group_code=608309578"> ![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-608309578-blue?style=flat&color=1191FF)</a>
 <a href="https://afdian.com/a/argon4w"> ![爱发电](https://img.shields.io/badge/%E7%88%B1%E5%8F%91%E7%94%B5-%E6%AC%A2%E8%BF%8E%E8%B5%9E%E5%8A%A9-purple?style=flat&color=916AE4)</a>
 
+## Fork 维护说明
+本 fork 用于验证并修复 NeoForge 1.21.1 专用服务端加载 EveryXHotpot 时触发客户端渲染类的问题。当前修复分支为 `fix/dedicated-server-client-class-crash`。
+
+原项目采用 MIT License。本 fork 保留原始 `LICENSE` 与版权声明；发布源码或二进制构建时，请同时保留并附带该许可证文件。
+
 ## 概述
 ### TeaCon 2023
 这次 TeaCon 的主题是热闹, 于是AR就顺理成章地想到了在自己印象中最能代表热闹的东西: 火锅.
@@ -27,6 +32,11 @@
 如果还不觉得够, 一起火锅还提供的非常丰富灵活的组件系统用于自定义锅底的的制作, 发挥你的想象力, 制作出独属于你自己的锅底!
 
 ## 更新日志:
+### 2026-07-09 fork 修复 **(1.21.1 NeoForge)**
+1. 修复专用服务端加载时因 `HotpotModEntry` 直接引用客户端渲染类导致的 `NoClassDefFoundError: net/minecraft/client/renderer/BlockEntityWithoutLevelRenderer`。
+2. 将客户端侧渲染注册拆分到 `HotpotClientRegistries`，并仅在 `Dist.CLIENT` 下通过反射加载，避免服务端 classloader 解析客户端类。
+3. 将自定义物品渲染器与汤底渲染配置管理器的静态引用移到客户端侧，避免 KubeJS 扫描 common 主类字段时触发崩溃。
+
 ### 2024-10-30 2.0.2-TeaCon2024 **(1.21)**
 1. 修复了与最新版Sodium/Embeddium一起使用时的兼容性问题
 
